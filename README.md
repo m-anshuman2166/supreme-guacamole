@@ -19,7 +19,7 @@ Running requires:
 Build
 -----
 
-1. Run `./clean.sh` for good measure.
+1. Run `sudo ./clean.sh` for good measure.
 2. For every API Level/architecture combination you wish to build for:
    * `ARCH=arm ANDROID_API=21 ./build.sh` to build everything!
 3. Here are a couple of examples to build a static version of the library with docker.
