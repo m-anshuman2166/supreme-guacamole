@@ -1,7 +1,7 @@
 Python 3 Android
 ================
 
-This is an experimental set of build scripts that will cross-compile Python 3.9.1 for an Android device.
+This is an experimental set of build scripts that will cross-compile Python 3.9.5 for an Android device.
 
 Building requires:
 
@@ -23,8 +23,8 @@ Build
 2. For every API Level/architecture combination you wish to build for:
    * `ARCH=arm ANDROID_API=21 ./build.sh` to build everything!
 3. Here are a couple of examples to build a static version of the library with docker.
-   * Build 64 bit `sudo docker run --rm -it -v $(pwd):/python3-android -v ${NDK_PATH}:/android-ndk:ro --env ARCH=arm64 --env ANDROID_API=23 python:3.9.1-slim /python3-android/docker-build.sh --enable-shared --without-ensurepip --disable-ipv6`
-   * Build 32 bit `sudo docker run --rm -it -v $(pwd):/python3-android -v ${NDK_PATH}:/android-ndk:ro --env ARCH=arm --env ANDROID_API=23 python:3.9.1-slim /python3-android/docker-build.sh --enable-shared --without-ensurepip --disable-ipv6`
+   * Build 64 bit `sudo docker run --rm -it -v $(pwd):/python3-android -v ${NDK_PATH}:/android-ndk:ro --env ARCH=arm64 --env ANDROID_API=23 python:3.9.5-slim /python3-android/docker-build.sh --enable-shared --without-ensurepip --disable-ipv6`
+   * Build 32 bit `sudo docker run --rm -it -v $(pwd):/python3-android -v ${NDK_PATH}:/android-ndk:ro --env ARCH=arm --env ANDROID_API=23 python:3.9.5-slim /python3-android/docker-build.sh --enable-shared --without-ensurepip --disable-ipv6`
 
 Build using Docker/Podman
 ------------------
@@ -32,7 +32,7 @@ Build using Docker/Podman
 Download the latest NDK for Linux from https://developer.android.com/ndk/downloads and extract it.
 
 ```
-docker run --rm -it -v $(pwd):/python3-android -v /path/to/android-ndk:/android-ndk:ro --env ARCH=arm --env ANDROID_API=21 python:3.9.1-slim /python3-android/docker-build.sh
+docker run --rm -it -v $(pwd):/python3-android -v /path/to/android-ndk:/android-ndk:ro --env ARCH=arm --env ANDROID_API=21 python:3.9.5-slim /python3-android/docker-build.sh
 ```
 
 Here `/path/to/android-ndk` should be replaced with the actual for NDK (e.g., `/opt/android-ndk`).
