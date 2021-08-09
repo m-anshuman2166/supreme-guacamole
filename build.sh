@@ -5,7 +5,7 @@ set -x
 
 THIS_DIR="$PWD"
 
-PYVER=3.9.5
+PYVER=3.9.6
 SRCDIR=src/Python-$PYVER
 
 COMMON_ARGS="--arch ${ARCH:-arm} --api ${ANDROID_API:-21}"
