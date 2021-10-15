@@ -1,13 +1,13 @@
 Python 3 Android
 ================
 
-This is an experimental set of build scripts that will cross-compile Python 3.9.6 for an Android device.
+This is an experimental set of build scripts that will cross-compile Python 3.10.0 for an Android device.
 
 Building requires:
 
 1. Linux. This project might work on other systems supported by NDK but no guarantee.
-2. Android NDK r21 installed and environment variable ``$ANDROID_NDK`` points to its root directory. Older NDK may not work and NDK <= r18 is known to be incompatible.
-3. `python3.9` binary from Python 3.9.6 on the building host. It's recommended to use exactly that Python version, which can be installed via [pyenv](https://github.com/yyuu/pyenv). Don't forget to check that `python3.9` is available in $PATH.
+2. Android NDK r23 installed and environment variable ``$ANDROID_NDK`` points to its root directory. Older NDK may not work and NDK <= r18 is known to be incompatible.
+3. `python3.10` binary from Python 3.10.0 on the building host. It's recommended to use exactly that Python version, which can be installed via [pyenv](https://github.com/yyuu/pyenv). Don't forget to check that `python3.10` is available in $PATH.
 4. `tic` binary from ncurses 6.2 on the building host. Slightly newer or older version may also work but no guarantee.
 5. A case-sensitive filesystem. The default filesystem on Windows and macOS is case-insensitive, and building may fail.
 
@@ -23,8 +23,8 @@ Build
 2. For every API Level/architecture combination you wish to build for:
    * `ARCH=arm ANDROID_API=21 ./build.sh` to build everything!
 3. Here are a couple of examples to build a static version of the library with docker.
-   * Build 64 bit `sudo docker run --rm -it -v $(pwd):/python3-android -v ${NDK_PATH}:/android-ndk:ro --env ARCH=arm64 --env ANDROID_API=23 python:3.9.6-slim /python3-android/docker-build.sh --enable-shared --without-ensurepip --disable-ipv6`
-   * Build 32 bit `sudo docker run --rm -it -v $(pwd):/python3-android -v ${NDK_PATH}:/android-ndk:ro --env ARCH=arm --env ANDROID_API=23 python:3.9.6-slim /python3-android/docker-build.sh --enable-shared --without-ensurepip --disable-ipv6`
+   * Build 64 bit `sudo docker run --rm -it -v $(pwd):/python3-android -v ${NDK_PATH}:/android-ndk:ro --env ARCH=arm64 --env ANDROID_API=23 python:3.10.0-slim /python3-android/docker-build.sh --enable-shared --without-ensurepip --disable-ipv6`
+   * Build 32 bit `sudo docker run --rm -it -v $(pwd):/python3-android -v ${NDK_PATH}:/android-ndk:ro --env ARCH=arm --env ANDROID_API=23 python:3.10.0-slim /python3-android/docker-build.sh --enable-shared --without-ensurepip --disable-ipv6`
 
 Build using Docker/Podman
 ------------------
@@ -32,7 +32,7 @@ Build using Docker/Podman
 Download the latest NDK for Linux from https://developer.android.com/ndk/downloads and extract it.
 
 ```
-docker run --rm -it -v $(pwd):/python3-android -v /path/to/android-ndk:/android-ndk:ro --env ARCH=arm --env ANDROID_API=21 python:3.9.6-slim /python3-android/docker-build.sh
+docker run --rm -it -v $(pwd):/python3-android -v /path/to/android-ndk:/android-ndk:ro --env ARCH=arm --env ANDROID_API=21 python:3.10.0-slim /python3-android/docker-build.sh
 ```
 
 Here `/path/to/android-ndk` should be replaced with the actual for NDK (e.g., `/opt/android-ndk`).
