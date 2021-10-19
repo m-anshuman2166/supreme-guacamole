@@ -4,47 +4,37 @@ Python 3 Android
 This is an experimental set of build scripts that will cross-compile Python 3.10.0 for an Android device.
 
 Building requires:
+-----
 
 1. Linux. This project might work on other systems supported by NDK but no guarantee.
 2. Android NDK r23 installed and environment variable ``$ANDROID_NDK`` points to its root directory. Older NDK may not work and NDK <= r18 is known to be incompatible.
-3. `python3.10` binary from Python 3.10.0 on the building host. It's recommended to use exactly that Python version, which can be installed via [pyenv](https://github.com/yyuu/pyenv). Don't forget to check that `python3.10` is available in $PATH.
-4. `tic` binary from ncurses 6.2 on the building host. Slightly newer or older version may also work but no guarantee.
-5. A case-sensitive filesystem. The default filesystem on Windows and macOS is case-insensitive, and building may fail.
+   <br>An example of how to set the environment variable would be ``export ANDROID_NDK="/home/myuser/android-ndk-r23-linux" >> $HOME/.bashrc``
 
+<br>
 Running requires:
+-----
 
 1. Android 5.0 (Lollipop, API 21) or above
-2. arm, arm64, x86 or x86-64
+2. arm, arm64
 
+<br>
 Build
 -----
 
-1. Run `sudo ./clean.sh` for good measure.
-2. For every API Level/architecture combination you wish to build for:
-   * `ARCH=arm ANDROID_API=21 ./build.sh` to build everything!
-3. Here are a couple of examples to build a static version of the library with docker.
+1. Run `sudo ./clean.sh` for good measure, and after each build.
+2. You will need a seperate build run for every API Level/architecture combination you wish to run on:
+   <br>Here are a couple of examples to build a static version of the library with docker.
    * Build 64 bit `sudo docker run --rm -it -v $(pwd):/python3-android -v ${NDK_PATH}:/android-ndk:ro --env ARCH=arm64 --env ANDROID_API=23 python:3.10.0-slim /python3-android/docker-build.sh --enable-shared --without-ensurepip --disable-ipv6`
    * Build 32 bit `sudo docker run --rm -it -v $(pwd):/python3-android -v ${NDK_PATH}:/android-ndk:ro --env ARCH=arm --env ANDROID_API=23 python:3.10.0-slim /python3-android/docker-build.sh --enable-shared --without-ensurepip --disable-ipv6`
 
-Build using Docker/Podman
-------------------
 
-Download the latest NDK for Linux from https://developer.android.com/ndk/downloads and extract it.
-
-```
-docker run --rm -it -v $(pwd):/python3-android -v /path/to/android-ndk:/android-ndk:ro --env ARCH=arm --env ANDROID_API=21 python:3.10.0-slim /python3-android/docker-build.sh
-```
-
-Here `/path/to/android-ndk` should be replaced with the actual for NDK (e.g., `/opt/android-ndk`).
-
-Podman is also supported. Simply replace `docker` with `podman` in the command above.
-
-Installation
+Installation & Running
 ------------
 
-1. Make sure `adb shell` works fine
-2. Copy all files in `build` to a folder on the device (e.g., ```/data/local/tmp/python3```). Note that on most devices `/sdcard` is not on a POSIX-compliant filesystem, so the python binary will not run from there.
-3. In adb shell:
+1. This project has a sample application. It is most likely out of date file wise, but it is a good starting point to understand how to use it.
+2. Make sure `adb shell` works fine
+3. Copy all files in `build` to a folder on the device (e.g., ```/data/local/tmp/python3```). Note that on most devices `/sdcard` is not on a POSIX-compliant filesystem, so the python binary will not run from there.
+4. In adb shell:
 <pre>
 cd /data/local/tmp/build
 . ./env.sh
@@ -54,7 +44,7 @@ python3
 
 SSL/TLS
 -------
-SSL certificates have old and new naming schemes. Android uses the old scheme yet the latest OpenSSL uses the new one. If you got ```CERTIFICATE_VERIFY_FAILED``` when using SSL/TLS in Python, you need to collect system certificates: (thanks @GRRedWings for the idea)
+SSL certificates have old and new naming schemes. Android uses the old scheme yet the latest OpenSSL uses the new one. If you got ```CERTIFICATE_VERIFY_FAILED``` when using SSL/TLS in Python, you need to collect system certificates:
 ```
 cd /data/local/tmp/build
 mkdir -p etc/ssl
