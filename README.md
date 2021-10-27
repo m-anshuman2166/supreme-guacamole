@@ -7,8 +7,8 @@ Building requires:
 -----
 
 1. Linux. This project might work on other systems supported by NDK but no guarantee.
-2. Android NDK r23 installed and environment variable ``$ANDROID_NDK`` points to its root directory. Older NDK may not work and NDK <= r18 is known to be incompatible.
-   <br>An example of how to set the environment variable would be ``export ANDROID_NDK="/home/myuser/android-ndk-r23-linux" >> $HOME/.bashrc``
+2. Android NDK r23b installed and environment variable ``$ANDROID_NDK`` points to its root directory. Older NDK may not work and NDK <= r18 is known to be incompatible.
+   <br>An example of how to set the environment variable would be ``export ANDROID_NDK="/home/myuser/android-ndk-r23b-linux" >> $HOME/.bashrc``
 
 <br>
 Running requires:
