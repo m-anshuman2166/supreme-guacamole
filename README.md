@@ -1,7 +1,7 @@
 Python 3 Android
 ================
 
-This is an experimental set of build scripts that will cross-compile Python 3.10.0 for an Android device.
+This is an experimental set of build scripts that will cross-compile Python 3.10.4 for an Android device.
 
 Building requires:
 -----
@@ -15,7 +15,7 @@ Running requires:
 -----
 
 1. Android 5.0 (Lollipop, API 21) or above
-2. arm, arm64
+2. arm, arm64, x86, x86_64
 
 <br>
 Build
@@ -24,8 +24,9 @@ Build
 1. Run `sudo ./clean.sh` for good measure, and after each build.
 2. You will need a seperate build run for every API Level/architecture combination you wish to run on:
    <br>Here are a couple of examples to build a static version of the library with docker.
-   * Build 64 bit `sudo docker run --rm -it -v $(pwd):/python3-android -v ${NDK_PATH}:/android-ndk:ro --env ARCH=arm64 --env ANDROID_API=23 python:3.10.0-slim /python3-android/docker-build.sh --enable-shared --without-ensurepip --disable-ipv6`
-   * Build 32 bit `sudo docker run --rm -it -v $(pwd):/python3-android -v ${NDK_PATH}:/android-ndk:ro --env ARCH=arm --env ANDROID_API=23 python:3.10.0-slim /python3-android/docker-build.sh --enable-shared --without-ensurepip --disable-ipv6`
+   * Build 64 bit `sudo docker run --rm -it -v $(pwd):/python3-android -v ${NDK_PATH}:/android-ndk:ro --env ARCH=arm64 --env ANDROID_API=23 python:3.10.4-slim /python3-android/docker-build.sh --enable-shared --without-ensurepip --disable-ipv6`
+   * Build 32 bit `sudo docker run --rm -it -v $(pwd):/python3-android -v ${NDK_PATH}:/android-ndk:ro --env ARCH=arm --env ANDROID_API=23 python:3.10.4-slim /python3-android/docker-build.sh --enable-shared --without-ensurepip --disable-ipv6`
+   * Build x86_64 `sudo docker run --rm -it -v $(pwd):/python3-android -v ${NDK_PATH}:/android-ndk:ro --env ARCH=x86_64 --env ANDROID_API=23 python:3.10.4-slim /python3-android/docker-build.sh --enable-shared --without-ensurepip --disable-ipv6`
 
 
 Installation & Running
@@ -57,7 +58,6 @@ Check SSL/TLS functionality with:
 import urllib.request
 print(urllib.request.urlopen('https://httpbin.org/ip').read().decode('ascii'))
 ```
-
 
 Known Issues
 ------------

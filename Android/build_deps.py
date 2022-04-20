@@ -63,25 +63,25 @@ class BZip2(Package):
         self.run(['install', '-Dm644', 'bzlib.h', '-t', str(SYSROOT / 'usr' / 'include')])
 
 class GDBM(Package):
-    source = 'https://ftp.gnu.org/gnu/gdbm/gdbm-1.20.tar.gz'
+    source = 'https://ftp.gnu.org/gnu/gdbm/gdbm-1.23.tar.gz'
     configure_args = ['--enable-libgdbm-compat']
 
 class LibFFI(Package):
-    source = 'https://github.com/libffi/libffi/releases/download/v3.3/libffi-3.3.tar.gz'
+    source = 'https://github.com/libffi/libffi/releases/download/v3.4.2/libffi-3.4.2.tar.gz'
     # libffi may fail to configure with Docker on WSL2 (#33)
     configure_args = ['--disable-builddir']
 
 class LibUUID(Package):
-    source = 'https://mirrors.edge.kernel.org/pub/linux/utils/util-linux/v2.37/util-linux-2.37.tar.xz'
+    source = 'https://mirrors.edge.kernel.org/pub/linux/utils/util-linux/v2.38/util-linux-2.38.tar.xz'
     configure_args = ['--disable-all-programs', '--enable-libuuid']
 
 class NCurses(Package):
-    source = 'https://invisible-mirror.net/archives/ncurses/ncurses-6.2.tar.gz'
+    source = 'https://invisible-mirror.net/archives/ncurses/ncurses-6.3.tar.gz'
     # Not stripping the binaries as there is no easy way to specify the strip program for Android
     configure_args = ['--without-ada', '--enable-widec', '--without-debug', '--without-cxx-binding', '--disable-stripping']
 
 class OpenSSL(Package):
-    source = 'https://www.openssl.org/source/openssl-3.0.0.tar.gz'
+    source = 'https://www.openssl.org/source/openssl-3.0.2.tar.gz'
 
     def configure(self):
         # OpenSSL handles NDK internal paths by itself
@@ -106,7 +106,7 @@ class OpenSSL(Package):
         self.run(['make', 'install_sw', 'install_ssldirs', f'DESTDIR={SYSROOT}'])
 
 class Readline(Package):
-    source = 'https://ftp.gnu.org/gnu/readline/readline-8.1.tar.gz'
+    source = 'https://ftp.gnu.org/gnu/readline/readline-8.1.2.tar.gz'
 
     # See the wcwidth() test in aclocal.m4. Tested on Android 6.0 and it's broken
     # XXX: wcwidth() is implemented in [1], which may be in Android P
@@ -115,13 +115,13 @@ class Readline(Package):
     configure_args = ['bash_cv_wcwidth_broken=yes']
 
 class SQLite(Package):
-    source = 'https://sqlite.org/2021/sqlite-autoconf-3350500.tar.gz'
+    source = 'https://sqlite.org/2022/sqlite-autoconf-3380200.tar.gz'
 
 class XZ(Package):
     source = 'https://tukaani.org/xz/xz-5.2.5.tar.xz'
 
 class ZLib(Package):
-    source = 'https://www.zlib.net/zlib-1.2.11.tar.gz'
+    source = 'https://www.zlib.net/zlib-1.2.12.tar.gz'
 
     def configure(self):
         os.environ.update({
