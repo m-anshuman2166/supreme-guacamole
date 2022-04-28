@@ -15,7 +15,7 @@ public class PythonThread extends Thread
     protected static String TAG = "PythonThread";
 
     // JNI links
-    public native int initPython(String aPath, String aSetupDirectory);
+    public native int initPython(String aPath);
     public native int runPython(String aFilename);
     public native int cleanupPython();
 
@@ -67,7 +67,7 @@ public class PythonThread extends Thread
                 }
 
                 // initialize python
-                int lPythonReturn = initPython(lPath, Common.getEngineRootDirectory(mContext));
+                int lPythonReturn = initPython(lPath);
 
                 // Make sure that we initialized cleanly
                 if (lPythonReturn < 0)

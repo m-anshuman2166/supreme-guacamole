@@ -8,10 +8,12 @@ set(CMAKE_SYSTEM_VERSION 23)
 set(distribution_dir ${CMAKE_SOURCE_DIR}/../jniLibs)
 set(jni_src_dir ${CMAKE_SOURCE_DIR}/../jni)
 
-if("${CMAKE_SIZEOF_VOID_P}" STREQUAL "4")
-    include_directories(${jni_src_dir}/python32)
+if (${CMAKE_SYSTEM_PROCESSOR} STREQUAL "x86_64")
+    include_directories(${jni_src_dir}/Pythonx86_64)
+elseif("${CMAKE_SIZEOF_VOID_P}" STREQUAL "4")
+    include_directories(${jni_src_dir}/Python32)
 else()
-    include_directories(${jni_src_dir}/python64)
+    include_directories(${jni_src_dir}/Python64)
 endif()
 
 # set all our include directories (header locations)
@@ -41,6 +43,6 @@ SET_TARGET_PROPERTIES (pythonthread PROPERTIES LINKER_LANGUAGE CXX)
 
 # lastly, set to link against the 3rd party libs above
 target_link_libraries(pythonthread
-                      python3.9
+                      python3.10
                       log
                       atomic)

@@ -28,7 +28,7 @@ android {
 
     // Only building ARM currently
     // productFlavors allows us to specify exactly which ABIs we support
-    flavorDimensions "arm8", "arm"
+    flavorDimensions "arm8", "arm", "x86_64"
     productFlavors {
         arm8 {
             dimension "arm8"
@@ -40,6 +40,12 @@ android {
             dimension "arm"
             ndk {
                 abiFilter 'armeabi-v7a'
+            }
+        }
+        x86_64 {
+            dimension "x86_64"
+            ndk {
+                abiFilter 'x86_64'
             }
         }
     }
