@@ -13,13 +13,7 @@
 #include <fcntl.h>
 #include <pthread.h>
 
-static std::string mPythonDirectory;
-static std::string mSetupDirectory;
-//
-static std::string mSetupFunctionName("setupEnvironment");
-
 // This is the object we use to call a specific method in a python file.
-// Currently we only support 1 file, and that is android_setup.py
 static py_helper::PythonProcessing mPyProcess;
 
 void startStdErrLogging();
@@ -32,20 +26,17 @@ static pthread_t mOutThread = -1;
 static void* out_thread_func(void*);
 static void* err_thread_func(void*);
 
-long setupAndroidSetupFile(std::string aPythonPath, std::string aSetupPath);
-
-JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *jvm, void *reserved) {
+extern "C" JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *jvm, void *reserved) {
    __android_log_write(ANDROID_LOG_VERBOSE, __FUNCTION__, "JNI_OnLoad");
 
    return JNI_VERSION_1_6;
 }
 
-JNIEXPORT jint JNICALL Java_com_example_pythontest_PythonThread_initPython
-      (JNIEnv* env, jobject obj, jstring aPath, jstring aSetupDirectory)
+extern "C" JNIEXPORT jint JNICALL Java_com_example_pythontest_PythonThread_initPython
+      (JNIEnv* env, jobject obj, jstring aPath)
 {
 
    std::wstring lPassedPath = Utilities::getWStringFromJava(env, aPath);
-   mSetupDirectory = Utilities::getStringFromJava(env, aSetupDirectory);
 
    std::string lDirectory;
 
@@ -76,30 +67,18 @@ JNIEXPORT jint JNICALL Java_com_example_pythontest_PythonThread_initPython
    // Tell Python our path
    Py_SetPath(lPyPath.c_str());
 
-   __android_log_write(ANDROID_LOG_VERBOSE, __FUNCTION__, "initPython - PyPath");
-
-   // The Python Directory needs to be a wide char, convert our path
-   mPythonDirectory = Utilities::convertWChar(lPyPath);
-
-   // Setup our Python module for Android Setup
-   setupAndroidSetupFile(mPythonDirectory, mSetupDirectory);
-
-   // Startup the Error logging
-   startStdErrLogging();
-   startStdOutLogging();
-
    __android_log_write(ANDROID_LOG_VERBOSE, __FUNCTION__, "Leaving initPython");
    return 0;
 }
 
-JNIEXPORT jint JNICALL Java_com_example_pythontest_PythonThread_cleanupPython
+extern "C" JNIEXPORT jint JNICALL Java_com_example_pythontest_PythonThread_cleanupPython
       (JNIEnv* env, jobject obj)
 {
 
    __android_log_write(ANDROID_LOG_VERBOSE, __FUNCTION__, "We are in Cleanup Python");
 
-
-   mPyProcess.unloadFile();
+   // TODO: -- In a perfect world we setup our logging threads better to be able to shut down. We would set a flag and
+   //  that would break the endless loop.
 
    //If we can't init, handle it
    if (!Py_IsInitialized())
@@ -116,10 +95,23 @@ JNIEXPORT jint JNICALL Java_com_example_pythontest_PythonThread_cleanupPython
    return 1;
 }
 
-JNIEXPORT jint JNICALL Java_com_example_pythontest_PythonThread_runPython
+extern "C" JNIEXPORT jint JNICALL Java_com_example_pythontest_PythonThread_runPython
       (JNIEnv* env, jobject obj, jstring filename)
 {
    __android_log_write(ANDROID_LOG_VERBOSE, __FUNCTION__, "We are in Run Python");
+
+   // Initialize Python, we only want to do this once!
+   Py_Initialize();
+
+   //If we can't init, handle it
+   if (!Py_IsInitialized()) {
+      __android_log_write(ANDROID_LOG_ERROR, __FUNCTION__, "Python has not been initialized while trying to start python in Run");
+      return -4;
+   }
+   else
+   {
+      __android_log_write(ANDROID_LOG_VERBOSE, __FUNCTION__, "Python Engine has been initialized");
+   }
 
    std::string lPythonFile = Utilities::getStringFromJava(env, filename);
 
@@ -132,72 +124,19 @@ JNIEXPORT jint JNICALL Java_com_example_pythontest_PythonThread_runPython
       return -1;
    }
 
-   //If we can't init, handle it
-   if (!Py_IsInitialized())
-   {
-      __android_log_write(ANDROID_LOG_ERROR, __FUNCTION__, "Python has not been initialized while trying to start python in Run");
-      return -4;
-   }
-
-    file = (FILE*) _Py_fopen(lPythonFile.c_str(), "r+");
-
-    if (file != nullptr)
-    {
-        __android_log_write(ANDROID_LOG_VERBOSE, __FUNCTION__,
-                            "About to call SimpleFile with the following PY file");
-        // Execute the python script.  A return of 0 is success, -1 is failure
-        int lPyReturn = PyRun_SimpleFile(file, lPythonFile.c_str());
-
-        if (lPyReturn != 0)
-        {
-            __android_log_write(ANDROID_LOG_ERROR, __FUNCTION__, "Execution of Python main file failed");
-            return lPyReturn;
-        }
-    }
-    else
-    {
-        __android_log_write(ANDROID_LOG_ERROR, __FUNCTION__, "Python was unable to open main.py");
-    }
-
-   __android_log_write(ANDROID_LOG_INFO, __FUNCTION__, "We are leaving run Python");
-
-   return 0;
-}
-
-long setupAndroidSetupFile(std::string aPythonPath, std::string aSetupPath)
-{
-   std::string lPythonFile(aSetupPath + "android_setup.py");
-
-   // This sets our base path we use for each file we call.
-   mPyProcess.setPyPath(aPythonPath);
-
-   // Initialize Python, we only want to do this once!
-   Py_Initialize();
-
-   //If we can't init, handle it
-   if (!Py_IsInitialized()) {
-      __android_log_write(ANDROID_LOG_WARN, __FUNCTION__, "Python was unable to initialize");
-      return -9;
-   }
-   else
-   {
-      __android_log_write(ANDROID_LOG_VERBOSE, __FUNCTION__, "Python Engine has been initialized");
-   }
-
-   // So after a few checks, we should have just the file name, nothing else
-   long lReturn = mPyProcess.loadFile(lPythonFile);
-
-   if (lReturn != 0)
-   {
-      __android_log_write(ANDROID_LOG_WARN, __FUNCTION__, "Python was unable to load file android setup");
-      return lReturn;
-   }
-
-   long lReturnValue = mPyProcess.executeFunction(mSetupFunctionName);
+   // Execute the python script.
+   long lLoadReturn = mPyProcess.loadFile(lPythonFile);
+   long lExecuteReturn = mPyProcess.executeFunction("main");
 
    mPyProcess.unloadFile();
 
-   return lReturnValue;
+   // Startup the Error logging
+   startStdErrLogging();
+   startStdOutLogging();
+
+   __android_log_write(ANDROID_LOG_INFO, __FUNCTION__, "We are leaving run Python");
+
+   return lExecuteReturn;
 }
 
 // Start up our Standard Error Thread
@@ -215,11 +154,12 @@ void startStdErrLogging()
    {
       return;
    }
+
+   pthread_detach(mErrThread);
 }
 
 void startStdOutLogging()
 {
-
    // This will make our stderr buffer wake on newline _IOLBF instead of Nonbuffered _IONBF
    setvbuf(stdout, nullptr, _IOLBF, 0);
 
@@ -232,6 +172,8 @@ void startStdOutLogging()
    {
       return;
    }
+
+   pthread_detach(mOutThread);
 }
 
 static void* out_thread_func(void*)

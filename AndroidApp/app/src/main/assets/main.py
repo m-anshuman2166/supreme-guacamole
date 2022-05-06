@@ -6,8 +6,8 @@ def main():
     with open(out_file, 'a') as the_file:
         the_file.write('It works!\n')
 
-    import decimal
-    print(decimal.__file__)
+    import time
+    print(time.time())
     with open(out_file, 'a') as the_file:
         the_file.write('It Still works!\n')
 

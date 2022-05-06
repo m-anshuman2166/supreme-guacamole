@@ -20,15 +20,15 @@ import java.util.zip.ZipInputStream;
 public class PythonThread extends Thread
 {
     @SuppressWarnings("FieldCanBeLocal")
-    private static String TAG = "PythonThread";
+    private static final String TAG = "PythonThread";
 
     // JNI links
-    public native int initPython(String aPath, String aSetupDirectory);
+    public native int initPython(String aPath);
     public native int runPython(String aFilename);
     public native int cleanupPython();
 
-    private Logger mLogger;
-    private Context mContext;
+    private final Logger mLogger;
+    private final Context mContext;
 
 
     PythonThread(Context aContext)
@@ -47,7 +47,13 @@ public class PythonThread extends Thread
         String lTempPath = Common.getEngineRootDirectory(mContext);
 
         // Unzip the right folder for he processor
-        if ( Common.is64bitProcessor())
+        if (Common.isEmulator())
+        {
+            // Extract our 64bit zip
+            unzipFileFromAssets("Pythonx86_64.zip");
+            lTempPath += "Pythonx86_64";
+        }
+        else if ( Common.is64bitProcessor())
         {
             // Extract our 64bit zip
             unzipFileFromAssets("Python64.zip");
@@ -60,7 +66,6 @@ public class PythonThread extends Thread
         }
 
         // Put the python files where we can execute them
-        copyPythonFilesFromAssets("android_setup.py");
         copyPythonFilesFromAssets("main.py");
 
         final String lPythonRootPath = lTempPath;
@@ -83,7 +88,7 @@ public class PythonThread extends Thread
                 }
 
                 // initialize python
-                int lPythonReturn = initPython(lPythonRootPath, Common.getEngineRootDirectory(mContext));
+                int lPythonReturn = initPython(lPythonRootPath);
 
                 // Make sure that we initialized cleanly
                 if (lPythonReturn < 0)
