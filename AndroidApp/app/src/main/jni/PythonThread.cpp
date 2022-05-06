@@ -26,13 +26,13 @@ static pthread_t mOutThread = -1;
 static void* out_thread_func(void*);
 static void* err_thread_func(void*);
 
-JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *jvm, void *reserved) {
+extern "C" JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *jvm, void *reserved) {
    __android_log_write(ANDROID_LOG_VERBOSE, __FUNCTION__, "JNI_OnLoad");
 
    return JNI_VERSION_1_6;
 }
 
-JNIEXPORT jint JNICALL Java_com_example_pythontest_PythonThread_initPython
+extern "C" JNIEXPORT jint JNICALL Java_com_example_pythontest_PythonThread_initPython
       (JNIEnv* env, jobject obj, jstring aPath)
 {
 
@@ -71,7 +71,7 @@ JNIEXPORT jint JNICALL Java_com_example_pythontest_PythonThread_initPython
    return 0;
 }
 
-JNIEXPORT jint JNICALL Java_com_example_pythontest_PythonThread_cleanupPython
+extern "C" JNIEXPORT jint JNICALL Java_com_example_pythontest_PythonThread_cleanupPython
       (JNIEnv* env, jobject obj)
 {
 
@@ -95,7 +95,7 @@ JNIEXPORT jint JNICALL Java_com_example_pythontest_PythonThread_cleanupPython
    return 1;
 }
 
-JNIEXPORT jint JNICALL Java_com_example_pythontest_PythonThread_runPython
+extern "C" JNIEXPORT jint JNICALL Java_com_example_pythontest_PythonThread_runPython
       (JNIEnv* env, jobject obj, jstring filename)
 {
    __android_log_write(ANDROID_LOG_VERBOSE, __FUNCTION__, "We are in Run Python");

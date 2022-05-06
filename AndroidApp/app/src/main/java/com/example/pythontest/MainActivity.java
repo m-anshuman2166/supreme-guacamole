@@ -8,7 +8,6 @@ import com.google.android.material.snackbar.Snackbar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -26,20 +25,13 @@ public class MainActivity extends AppCompatActivity
 
         // load library to ensure we have access to native layer
         // we do this because if the service isn't running yet, we don't have access to setLMSParameters
-        System.loadLibrary("pythonthread");
         System.loadLibrary("python3.10");
+        System.loadLibrary("pythonthread");
 
 
         FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        fab.setOnClickListener(view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                .setAction("Action", null).show());
 
         // Create our Python Thread
         PythonThread lThread = new PythonThread(this);
