@@ -24,9 +24,9 @@ Build
 1. Run `sudo ./clean.sh` for good measure, and after each build.
 2. You will need a separate build run for every API Level/architecture combination you wish to run on:
    <br>Here are a couple of examples to build a static version of the library with docker.
-   * Build 64 bit `sudo docker run --rm -it -v $(pwd):/python3-android -v ${NDK_PATH}:/android-ndk:ro --env ARCH=arm64 --env ANDROID_API=23 python:3.10.4-slim /python3-android/docker-build.sh --enable-shared --without-ensurepip --disable-ipv6`
-   * Build 32 bit `sudo docker run --rm -it -v $(pwd):/python3-android -v ${NDK_PATH}:/android-ndk:ro --env ARCH=arm --env ANDROID_API=23 python:3.10.4-slim /python3-android/docker-build.sh --enable-shared --without-ensurepip --disable-ipv6`
-   * Build x86_64 `sudo docker run --rm -it -v $(pwd):/python3-android -v ${NDK_PATH}:/android-ndk:ro --env ARCH=x86_64 --env ANDROID_API=23 python:3.10.4-slim /python3-android/docker-build.sh --enable-shared --without-ensurepip --disable-ipv6`
+   * Build 64 bit `sudo docker run --rm -it -v $(pwd):/python3-android -v ${NDK_PATH}:/android-ndk:ro --env ARCH=arm64 --env ANDROID_API=23 python:3.10.5-slim /python3-android/docker-build.sh --enable-shared --without-ensurepip --disable-ipv6`
+   * Build 32 bit `sudo docker run --rm -it -v $(pwd):/python3-android -v ${NDK_PATH}:/android-ndk:ro --env ARCH=arm --env ANDROID_API=23 python:3.10.5-slim /python3-android/docker-build.sh --enable-shared --without-ensurepip --disable-ipv6`
+   * Build x86_64 `sudo docker run --rm -it -v $(pwd):/python3-android -v ${NDK_PATH}:/android-ndk:ro --env ARCH=x86_64 --env ANDROID_API=23 python:3.10.5-slim /python3-android/docker-build.sh --enable-shared --without-ensurepip --disable-ipv6`
 
 
 Installation & Running
