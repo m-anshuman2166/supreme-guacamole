@@ -76,7 +76,7 @@ class LibUUID(Package):
     configure_args = ['--disable-all-programs', '--enable-libuuid']
 
 class NCurses(Package):
-    source = 'https://invisible-mirror.net/archives/ncurses/ncurses-6.3.tar.gz'
+    source = 'https://ftp.gnu.org/gnu/ncurses/ncurses-6.3.tar.gz'
     # Not stripping the binaries as there is no easy way to specify the strip program for Android
     configure_args = ['--without-ada', '--enable-widec', '--without-debug', '--without-cxx-binding', '--disable-stripping']
 
@@ -115,10 +115,10 @@ class Readline(Package):
     configure_args = ['bash_cv_wcwidth_broken=yes']
 
 class SQLite(Package):
-    source = 'https://sqlite.org/2022/sqlite-autoconf-3390100.tar.gz'
+    source = 'https://sqlite.org/2022/sqlite-autoconf-3390400.tar.gz'
 
 class XZ(Package):
-    source = 'https://tukaani.org/xz/xz-5.2.5.tar.xz'
+    source = 'https://tukaani.org/xz/xz-5.2.7.tar.xz'
 
 class ZLib(Package):
     source = 'https://www.zlib.net/zlib-1.2.13.tar.gz'
