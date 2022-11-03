@@ -26,9 +26,9 @@ android {
     }
 
     packagingOptions {
-        pickFirst 'lib/arm64-v8a/libpython3.10.so'
-        pickFirst 'lib/armeabi-v7a/libpython3.10.so'
-        pickFirst 'lib/x86_64/libpython3.10.so'
+        pickFirst 'lib/arm64-v8a/libpython3.11.so'
+        pickFirst 'lib/armeabi-v7a/libpython3.11.so'
+        pickFirst 'lib/x86_64/libpython3.11.so'
     }
 
     // Only building ARM currently

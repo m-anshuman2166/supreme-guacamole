@@ -24,8 +24,8 @@ include_directories(${jni_src_dir}/python
 )
 
 # define the 3rd party libraries to include in this project
-add_library(python310 SHARED IMPORTED)
-set_target_properties(python310 PROPERTIES IMPORTED_LOCATION ${distribution_dir}/${ANDROID_ABI}/libpython3.10.so)
+add_library(python311 SHARED IMPORTED)
+set_target_properties(python311 PROPERTIES IMPORTED_LOCATION ${distribution_dir}/${ANDROID_ABI}/libpython3.11.so IMPORTED_NO_SONAME TRUE)
 
 # set various C and CXX(++) flags
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DNDEBUG")
@@ -45,7 +45,7 @@ SET_TARGET_PROPERTIES (pythonthread PROPERTIES LINKER_LANGUAGE CXX)
 
 # lastly, set to link against the 3rd party libs above
 target_link_libraries(pythonthread
-                      python310
+                      python311
                       log
                       atomic
                       android)
