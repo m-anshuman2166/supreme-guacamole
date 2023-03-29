@@ -33,16 +33,16 @@ extern "C" JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *jvm, void *reserved) {
 }
 
 extern "C" JNIEXPORT jint JNICALL Java_com_example_pythontest_PythonThread_initPython
-      (JNIEnv* env, jobject obj, jstring aPath)
+      (JNIEnv* env, jobject obj, jstring initSetupDirectory)
 {
 
-   std::wstring lPassedPath = Utilities::getWStringFromJava(env, aPath);
+   std::wstring passedPath = Utilities::getWStringFromJava(env, initSetupDirectory);
 
-   std::string lDirectory;
+   std::string directory;
 
-   lDirectory = Utilities::convertWChar(lPassedPath);
+   directory = Utilities::convertWChar(passedPath);
 
-   if (!Utilities::dirExists(lDirectory))
+   if (!Utilities::dirExists(directory))
    {
       // Unable to initialize Python because the path does not exist
       __android_log_write(ANDROID_LOG_ERROR, __FUNCTION__, "Python path does not exist. Make sure you copy it from the assets! ");
@@ -50,22 +50,71 @@ extern "C" JNIEXPORT jint JNICALL Java_com_example_pythontest_PythonThread_initP
    }
 
    // We need to add this lib-dynload so that we have all our .so libraries available.
-   lDirectory += "/lib-dynload";
+   directory += "/lib-dynload";
 
    // Now make sure the SO directory exists too
-   if (!Utilities::dirExists(lDirectory))
+   if (!Utilities::dirExists(directory))
    {
       // Unable to initialize Python because the path does not exist
       __android_log_write(ANDROID_LOG_ERROR, __FUNCTION__, "Python lib-dynload path does not exist. Make sure you copy it from the assets!");
       return -1;
    }
 
-   // Based on the string passed in lets setup our Python Path
-   std::wstring lPyPath;
-   lPyPath = lPassedPath + L"/:" + lPassedPath + L"/lib-dynload";      // This is our path, where Python is, and where the shared libraries are
+   // Implicitly pre-initialize Python
+   // Adapted from: https://github.com/python/cpython/blob/main/Doc/c-api/init_config.rst#initialization-with-pyconfig
+   // Set up Python configuration objects
+   PyStatus status;
+   PyConfig config;
+   PyConfig_InitPythonConfig(&config);
 
-   // Tell Python our path
-   Py_SetPath(lPyPath.c_str());
+   // First, set the program name
+   __android_log_write(ANDROID_LOG_VERBOSE, __FUNCTION__, "Setting Python program_name");
+
+   status = PyConfig_SetBytesString(&config, &config.program_name, "WorkflowEngine");
+   if (PyStatus_Exception(status)) {
+      __android_log_write(ANDROID_LOG_ERROR, __FUNCTION__, "Error setting Python program_name during initialization");
+      PyConfig_Clear(&config);
+      return -1;
+   }
+
+   // Read all configuration
+   __android_log_write(ANDROID_LOG_VERBOSE, __FUNCTION__, "Reading Python configuration");
+   status = PyConfig_Read(&config);
+   if (PyStatus_Exception(status)) {
+      __android_log_write(ANDROID_LOG_ERROR, __FUNCTION__, "Error setting Python configuration during initialization");
+      PyConfig_Clear(&config);
+      return -1;
+   }
+
+   // Specify sys.path explicitly
+   // For us this is done twice, once for the base path and again for the lib-dynload folder
+   // Any location we decide to add to the python path in the future just needs another set of lines like these
+   __android_log_write(ANDROID_LOG_VERBOSE, __FUNCTION__, "Setting Python path");
+   config.module_search_paths_set = 1;
+   status = PyWideStringList_Append(&config.module_search_paths, passedPath.c_str());
+   if (PyStatus_Exception(status)) {
+      __android_log_write(ANDROID_LOG_ERROR, __FUNCTION__, "Error setting Python module_search_paths");
+      PyConfig_Clear(&config);
+      return -1;
+   }
+
+   std::wstring libDynload = passedPath + L"/lib-dynload";
+   status = PyWideStringList_Append(&config.module_search_paths, libDynload.c_str());
+   if (PyStatus_Exception(status)) {
+      __android_log_write(ANDROID_LOG_ERROR, __FUNCTION__, "Error setting Python module_search_paths.");
+
+      PyConfig_Clear(&config);
+      return -1;
+   }
+
+   // Actually initialize Python
+   __android_log_write(ANDROID_LOG_VERBOSE, __FUNCTION__, "Initializing Python from config");
+   status = Py_InitializeFromConfig(&config);
+    if (PyStatus_Exception(status)) {
+       __android_log_write(ANDROID_LOG_ERROR, __FUNCTION__, "Error initializing Python from config");
+       PyConfig_Clear(&config);
+       return -1;
+    }
 
    __android_log_write(ANDROID_LOG_VERBOSE, __FUNCTION__, "Leaving initPython");
    return 0;
