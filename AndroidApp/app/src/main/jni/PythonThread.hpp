@@ -15,7 +15,7 @@ extern "C" {
  * Signature: ()I
  */
 JNIEXPORT jint JNICALL Java_com_example_pythontest_PythonThread_initPython
-  (JNIEnv *, jobject, jstring aPath);
+  (JNIEnv *, jobject, jstring initSetupDirectory);
 
 /*
  * Class:     com_example_pythontest_PythonThread
@@ -30,7 +30,7 @@ JNIEXPORT jint JNICALL Java_com_example_pythontest_PythonThread_cleanupPython
  * Method:    runPython
  * Signature: ()I
  */
-JNIEXPORT jint JNICALL Java_com_example_pythontest_PythonThread_runPython
+JNIEXPORT jlong JNICALL Java_com_example_pythontest_PythonThread_runPython
   (JNIEnv *, jobject, jstring filename);
 
 
