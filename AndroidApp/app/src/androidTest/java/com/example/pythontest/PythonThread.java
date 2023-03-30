@@ -16,7 +16,7 @@ public class PythonThread extends Thread
 
     // JNI links
     public native int initPython(String aPath);
-    public native int runPython(String aFilename);
+    public native long runPython(String aFilename);
     public native int cleanupPython();
 
     private Logger mLogger;
@@ -36,18 +36,6 @@ public class PythonThread extends Thread
     {
         final String lPath = aPath;
         mLogger.log(Level.INFO, "We are in initialize inside of the service");
-
-
-// TODO - We need to extract the ZIP file for Python
-        if ( Common.is64bitProcessor())
-        {
-            // Extract our 64bit zip
-        }
-        else
-        {
-            // extract our 32 it zip
-        }
-
 
         // run a python file
         Thread lPythonThread = new Thread()

@@ -24,7 +24,7 @@ public class PythonThread extends Thread
 
     // JNI links
     public native int initPython(String aPath);
-    public native int runPython(String aFilename);
+    public native long runPython(String aFilename);
     public native int cleanupPython();
 
     private final Logger mLogger;

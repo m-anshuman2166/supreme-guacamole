@@ -1,4 +1,5 @@
 #pragma clang diagnostic push
+#pragma ide diagnostic ignored "UnusedParameter"
 #pragma ide diagnostic ignored "UnusedLocalVariable"
 #pragma ide diagnostic ignored "cert-err58-cpp"
 #include "PythonThread.hpp"
@@ -144,7 +145,7 @@ extern "C" JNIEXPORT jint JNICALL Java_com_example_pythontest_PythonThread_clean
    return 1;
 }
 
-extern "C" JNIEXPORT jint JNICALL Java_com_example_pythontest_PythonThread_runPython
+extern "C" JNIEXPORT jlong JNICALL Java_com_example_pythontest_PythonThread_runPython
       (JNIEnv* env, jobject obj, jstring filename)
 {
    __android_log_write(ANDROID_LOG_VERBOSE, __FUNCTION__, "We are in Run Python");
@@ -174,7 +175,7 @@ extern "C" JNIEXPORT jint JNICALL Java_com_example_pythontest_PythonThread_runPy
    }
 
    // Execute the python script.
-   long lLoadReturn = mPyProcess.loadFile(lPythonFile);
+   mPyProcess.loadFile(lPythonFile);
    long lExecuteReturn = mPyProcess.executeFunction("main");
 
    mPyProcess.unloadFile();
