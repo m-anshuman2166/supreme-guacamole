@@ -1,0 +1,3 @@
+mmap.lo: mmap.c ../autoconf.h
+
+../autoconf.h:
